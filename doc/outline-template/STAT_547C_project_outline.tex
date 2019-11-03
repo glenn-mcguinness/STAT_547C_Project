@@ -18,24 +18,30 @@
 \begin{document}
 
 % NOTE: You will replace the title below with your actual Title.
-\makeGenericHeader{Conditional Independence in Computational Statistics \\and Machine Learning}{Project Outline}
+\makeGenericHeader{S-estimators for Robust Linear Regression}{Project Outline}
 \vspace{-2cm}
 
 
 %%%%%%%%%%%%%%%%%%%
 \section{Title}
 
-The working title of my project is \emph{Conditional Independence in Computational Statistics and Machine Learning}.  
+The working title of my project is \emph{S-estimators for Robust Linear Regression}.  
 
 %%%%%%%%%%%%%%%%%%%
 \section{Background}
 
-Conditional independence is a key concept in probability, especially in statistical applications. The classic paper by \citet{Dawid:1979:CondIndStatTheory} presents core ideas of statistics in terms of conditional independence. Those ideas are particularly relevant to statistical theory: estimation and hypothesis testing, identifiability, and predictive sufficiency. In modern data analysis, the importance of conditional independence seems to have grown, especially in the context of computationally intensive methods in statistics and machine learning. I am interested in a literature review of the role played by conditional independence in modern data analysis, particularly on computationally intensive methods, and in initial steps towards formalizing the relationship between computational complexity, notions of statistical efficiency, and conditional independence.
+Classical linear regression methods depend on a set of strong assumptions about the distribution of the data. The most widely used assumption is that of normality. Linear regression methods that assume normality can fail spectacularly when the data are contaminated with outliers. Robust linear regression methods make weaker assumptions about the distribution of the data so that estimates are less sensitive to contamination. Sensitivity of contamination is frequently quantified using three measures of robustness -- the finite breakdown point, the asymptotic breakdown point, and the influence function. These properties characterize how a robust method responds to certain kinds of contamination. However, robustness comes at the cost of increasing the variance of the estimator, reducing the efficiency. Modern robust methods must balance robustness and efficiency so a formal understanding of these properties is of great importance. I am interested in performing a review of a classical method, S-estimators for linear regression \cite{rousseeuw1984robust}, particularly in proving robustness and asymptotic properties.
+
+% MM-estimators are widely used for linear regression because they can be tuned to achieve both high efficiency and a high breakdown point at the same time. MM-estimators are fit using a two stage process. First, a highly robust but inefficient S-estimator is fit and then a high efficiency M-estimator is fit, using the S-estimator as an initial estimate. 
+
+% Conditional independence is a key concept in probability, especially in statistical applications. The classic paper by \citet{Dawid:1979:CondIndStatTheory} presents core ideas of statistics in terms of conditional independence. Those ideas are particularly relevant to statistical theory: estimation and hypothesis testing, identifiability, and predictive sufficiency. In modern data analysis, the importance of conditional independence seems to have grown, especially in the context of computationally intensive methods in statistics and machine learning. I am interested in a literature review of the role played by conditional independence in modern data analysis, particularly on computationally intensive methods, and in initial steps towards formalizing the relationship between computational complexity, notions of statistical efficiency, and conditional independence.
 
 %%%%%%%%%%%%%%%%%%%
 \section{Technical aspects}
 
-The project will draw on technical aspects of the following areas: conditioning and disintegration, stochastic optimization, graphical models, computational complexity theory.
+The project will draw on technical aspects of the following areas: robust statistics, asymptotics, functional analysis, non-convex optimization.
+
+%conditioning and disintegration, stochastic optimization, graphical models, computational complexity theory.
 
 
 %%%%%%%%%%%%%%%%%%%
@@ -44,11 +50,16 @@ The project will draw on technical aspects of the following areas: conditioning 
 The key references for this project are:
 
 \begin{itemize}
-  \item \cite{Dawid:1980:CondIndStatOp}, as mentioned above.
-  \item \cite{Dawid:1979:CondIndStatTheory} is a technical version of \cite{Dawid:1980:CondIndStatOp}, with additional material.
-  \item \cite[][Ch.~6]{Kallenberg:2002} is a key technical reference for conditioning.
-  \item \cite[][Ch.~8]{Bishop:2006} is a gentle introduction to graphical models; \cite{Lauritzen:1996:GraphMod,Koller:Friedman:2009:PGM} are complete references.
-  \item Based on a preliminary literature search, some references for methods that rely on conditional independence: stochastic optimization \cite{Bottou:2010} and stochastic variational inference \cite{Hoffman:etal:2013:SVI}; efficient (lifted) inference in statistical relational models \cite{Niepert:Domingos,Niepert:vdBroeck:2014:TractExch}
+  \item \cite{rousseeuw1984robust}, as mentioned above.
+  \item \cite{rousseeuw1984least} contains theorems required for the proofs of the robustness and asymptotic properties of S-estimators.
+  \item \cite[Ch.~3]{maronna2019robust} provides an introduction into robustness properties and \cite[Ch.~5]{maronna2019robust} provides more complete proofs of some robustness properties of S-estimators.
+  \item \cite{croux1994generalized} proves additional robustness properties of a related estimator, the Generalized S-estimator.
+  \item \cite[Ch.~2]{hampel2011robust} presents influence functions more rigorously.
+  
+%   \item \cite{Dawid:1979:CondIndStatTheory} is a technical version of \cite{Dawid:1980:CondIndStatOp}, with additional material.
+%   \item \cite[][Ch.~6]{Kallenberg:2002} is a key technical reference for conditioning.
+%   \item \cite[][Ch.~8]{Bishop:2006} is a gentle introduction to graphical models; \cite{Lauritzen:1996:GraphMod,Koller:Friedman:2009:PGM} are complete references.
+%   \item Based on a preliminary literature search, some references for methods that rely on conditional independence: stochastic optimization \cite{Bottou:2010} and stochastic variational inference \cite{Hoffman:etal:2013:SVI}; efficient (lifted) inference in statistical relational models \cite{Niepert:Domingos,Niepert:vdBroeck:2014:TractExch}
 \end{itemize}
 
 
@@ -57,16 +68,25 @@ The key references for this project are:
 
 I will carry out this project with the following sequence of steps: 
 \begin{enumerate}
-  \item I will map ideas presented in a statistical theoretical framework in the papers of \citet{Dawid:1979:CondIndStatTheory,Dawid:1980:CondIndStatOp} to one that takes into account computational requirements of  inference algorithms, with a focus on sufficiency and adequacy.
-  \item I will review methods from computational statistics and machine learning that rely on conditional independence. 
-  \item I will focus on one of these methods for an in-depth study of the effects of conditional independence on computational complexity.
+    \item I will present the asymptotic and robustness properties used to evaluate robust methods based on \citet{maronna2019robust}, in both the classical and functional forms where possible, to establish the basis of analysis.
+    \item I will briefly discuss the idea of an M-estimator of scale.
+    \item I will review S-estimators in detail, showing proofs of several significant properties that may include the breakdown point, the finite breakdown point, asymptotic normality, consistency, asymptotic efficiency, and the influence function.
+    \item I will finish this report by discussing new contamination models, their relevance, and how classical methods such as S-estimators fail in data with this contamination. This will be used to present some active areas of research in robust statistics.
 \end{enumerate}
+
+% \begin{enumerate}
+%   \item I will map ideas presented in a statistical theoretical framework in the papers of \citet{Dawid:1979:CondIndStatTheory,Dawid:1980:CondIndStatOp} to one that takes into account computational requirements of  inference algorithms, with a focus on sufficiency and adequacy.
+%   \item I will review methods from computational statistics and machine learning that rely on conditional independence. 
+%   \item I will focus on one of these methods for an in-depth study of the effects of conditional independence on computational complexity.
+% \end{enumerate}
 
 
 %%%%%%%%%%%%%%%%%%%
 \section{Why I'm interested in this topic}
 
-I am interested in doing research that applies probability to problems in machine learning, and this seems like a great way to get started. 
+%I am interested in doing research that applies probability to problems in machine learning, and this seems like a great way to get started. 
+
+I am currently performing research into penalized robust regularized regression methods. My current research is very computational, so I would like to gain more experience in proving properties of robust estimators. Also, I am interested in future research into a new penalized regression estimator that may use a penalized S-estimator for linear regression as an initial estimates.
 
 
 %%%%%%%%%%%%%%%%%%%
