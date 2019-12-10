@@ -3,3 +3,83 @@
 % Exercises section
 
 \section{Exercises}
+
+Two exercises are presented in this section. The first exercises presents a straightforward robustness and consistency proof. Breakdown point proofs can quickly become complex, so the available options were limited. The consistency proof for the median absolute deviation is simple, but not trivial. The second exercise is an existence proof from literature \cite{croux1994generalized} that, while short, can require some thought. The median was frequently used in the report, so these exercises aim to familiarize students on how to work with medians.
+
+\subsection*{Exercise 1}
+
+\subsubsection*{Question}
+
+The definition of the median absolute deviation (MAD) estimator of scale is given by,
+\begin{equation}
+    \hat\sigma = c\med_i |x_i - \med_i x_i|
+\end{equation}
+for some $c \in \bbR$. For simplicity, assume that $\med_i x_i = 0$, $n$ is odd, and $x_i \not= x_j$ for all $i \not= j$.
+\begin{enumerate}[(i)]
+    \item What is the finite sample breakdown point? 
+    \item Assume $x \sim N(0,\sigma^2)$. When is $\hat\sigma$ a consistent estimator of the standard deviation?
+\end{enumerate}
+
+\subsubsection*{Solutions}
+
+(i)\\
+
+\noindent Consider a  set of observations with $m = (n-1)/2$ arbitrary values.
+By definition, for $n$ odd, $#\{i : |x_i| < \med_i |x_i|\} = (n-1)/2$. Hence, if $|x_i| < M$ for some $M\in\bbR$ for $(n+1)/2$ observations, then $\med_i |x_i| < M$. The non-arbitrary values are bounded by the largest observation plus one, which implies $m^* >= (n-1)/2$.\\
+
+\noindent Next, consider a dataset with $(n+1)/2$ observations replaced with arbitrary values. If we take all of these values to be equal to $x_0$ and take $x_0 \xrightarrow{} \infty$, then $\med_i x_i \xrightarrow{} \infty$, which implies $m^* <= (n-1)/2$.\\
+
+\noindent Hence, $\epsilon^* = m^*/n = 1 - (1/2)n$, which goes to $0.5$ as $n \xrightarrow{} \infty$.\\
+
+\noindent (ii)\\
+
+\noindent We will first show that $P(|\hat\sigma - \sigma| > \varepsilon) = 0$ for all $\varepsilon > 0$ for some $c \in \bbR_+$ and then consider $\sigma$. Let $\nu$ be the true median and $\varepsilon \in \bbR \ \{0\}$. Then, 
+\begin{equation*}
+    P(c\med_i|x_i| > \nu + \varepsilon)\ (*)
+\end{equation*} 
+is the probability that at least $(n+1)/2$ points exceed $\nu + \varepsilon$. This corresponds to a binomial random variable $N_n > \mathrm{Binom}(n,p)$ where $p = P(X > \nu + \varepsilon) \not= 0.5$. Hence
+\begin{align}
+    (*) &= P(N_n \geq (n+1)/2)\\
+        &= P(N_n - np \geq (n+1)/2 - np)\\
+        &\leq P(N_n - np \geq n(0.5-p)).\\
+\end{align}
+As $Var(N_n) < \infty$, the Extended Markov Inequality implies that
+\begin{equation*}
+    (*) \leq \frac{p(1-p)}{n(0.5-p)}.
+\end{equation*}
+We have $p \not= 0.5$. This implies that
+\begin{equation*}
+    \frac{p(1-p)}{n(0.5-p)} \xrightarrow{} 0\text{ as } n \xrightarrow{} \infty
+\end{equation*}
+and thus $P(|c\med_i|x_i| - \nu| + \varepsilon) = 0$. We assume that $x_i\sim N(0,\sigma^2)$ for all $i$, so we know that $|x_i|$ is the half normal distribution. It is well known that the median of the half-normal distribution is $\sqrt{2} \mathrm{erf}^{-1}(0.5) \sigma$ where $\mathrm{erf}$ is the error function. Hence, Slutzky's Theorem implies that $c\hat\sigma \xrightarrow{p} \sigma$ for $c = 1/(\sqrt{2} \mathrm{erf}^{-1}(0.5))$.
+
+\subsection*{Exercise 2}
+
+The least quartile difference estimator for linear regression (LQD-estimator) \cite{croux1994generalized} is defined as,
+$$ \hat\bb = \argmin_{\bb \in \bbR^p} Q_n(r_1,\hdots,r_n), $$
+$$ Q_n = \{|r_i - r_j|; i < j \}_{\binom{h_p}{2}:\binom{n}{2}} $$
+where $r_i$ is the residual of the $i$th case and $h_p = (n+p+1)/2$. This notation means that $Q_n$ is the $\binom{h_p}{2}$ order statistic of the set $\{|r_i - r_j|; i < j \}$ among the $\binom{n}{2}$ elements in the set. \\
+
+The LQD-estimator is a special case of a Generalized S-estimator, defined as the minimizer of a more general class of functions of residuals. Assume that none of the differences $(\bx_i- \bx_j, y_i - y_j)$ lie on the same vertical hyperplane in $\bbR^p$. A vertical hyperplane is defined as a plane passing through $(\boldsymbol{0},0)$ and $(\boldsymbol{0},1)$.\\
+
+Prove the existence of the LQD estimator. $Q_n (\bb)$ is continuous, so it is sufficient to show that there exists a compact ball $\calB$, such that for any $\bb_1 \in \calB$ and $\bb2 \in \bbR^{p+1} \ \calB$ that $Q_n (\bb_1) < Q_n (\bb_2)$.
+\\
+
+\textbf{\textit{Hint:}} For the $i$th order statistic of some sequence $r_1,r_2,\hdots,r_n$, if $#{j:r_j > M} = n-i+1$ for some $M\in\bbR$ then $r_{(i)} > M$.
+
+\subsubsection*{Solutions}
+
+This solution relies heavily on the proof in \cite{croux1994generalized}. It is about as simple as an existence proof gets, so I believe it is a reasonable exercise. The key for this proof is to consider $Q_n(\bb)$ at a $\bb$ for which we have a known bound and then construct a ball for which $|r_i - r_j|$ exceeds this bound for at least $(\binom{n}{2} - \binom{h_p}{2} + 1)$ observations (as $Q_n$ is an order statistic).\\
+
+\noindent Let $M = \max_{i<j} |y_i - y_j|$. This corresponds to the maximum difference between residuals for $||\beta|| = 0$. The reverse triangle inequality implies that,
+$$ |r_i - r_j| \geq ||x_i'\bb - x_j'\bb| - |y_i - y_j||.$$
+Let $\boldsymbol{\theta} = \bb / ||\bb||$. This gives
+$$ = ||x_i'\boldsymbol{\theta} - x_j'\boldsymbol{\theta}| ||\bb|| - |y_i - y_j||. (*)$$
+This is where the fact that the observations are in the general position becomes important. By definition, this implies that there exists no $p-1$ dimensional subspace of the plane $y=0$ on which $\binom{h_p}{2}$ points lie. As a result, 
+$$ \inf_{i<j} |x_i'\boldsymbol{\theta} - x_j'\boldsymbol{\theta}| = \delta > 0. $$
+If the observations were not in the general position, this would not be true. As this is true, let $||\bb|| = 2M/\delta + 1$,
+$$ (*) \geq |x_i'\boldsymbol{\theta} - x_j'\boldsymbol{\theta}| ||\bb|| - M$$
+$$ \geq (2M/\delta + 1)\delta - M > M$$
+for $(\binom{n}{2} - \binom{h_p}{2} + 1)$ observations. Let $\calB(2M/\delta + 1)$ be ball of radius $2M/\delta + 1$ about $\bb = \boldsymbol{0}$. Thus for all $\bb_1 \in \calB(2M/\delta + 1)$ and $\bb_2 \in (\calB(2M/\delta + 1))^C$, 
+$$Q_b(\bb_1) < Q_b(\bb_2).$$ 
+As $Q_n(\bb)$ is continuous, this implies that a minimum of $Q_n$ exists and the minimum is within the ball $\calB(2M/\delta + 1)$.

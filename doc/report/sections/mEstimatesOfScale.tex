@@ -1,0 +1,184 @@
+% !TEX root = ../main.tex
+
+\section{M-estimates of Scale}
+\label{sec:mScale}
+In classical statistics, the degree of variation of the data is usually discussed in terms of variance. The variance is the second moment of a random variable so provides a reasonable and intuitive measure of the variation of a random variable. However, finite second moments do not always exist. Instead, we may wish to use a different measure variation. Consider the multiplicative model
+\begin{equation}
+    x_i = \sigma u_i
+\end{equation}
+where the random variables $u_i$ are independent and identically distributed with some distribution $F$ with density $f_0$ where $\sigma>0$ is an unknown \textit{scale} parameter.The distributions of $x_i$ are in a scale family, with a density
+$$ \frac{1}{\sigma} f_0\bigg(\frac{x}{\sigma} \bigg).$$
+The parameter $\sigma$ is the scale of the data. We want to estimate $\sigma$, so we may wish to first consider the maximum likelihood estimator (MLE). The MLE can be calculated by finding the estimate $\hat \sigma$ that maximizes the log likelihood. The first order conditions of the maximization of the log likelihood are
+\begin{equation}
+    \label{eq:mleScale}
+    \sum_{i=1}^n \rho(x_i/\hat \sigma) = 1
+\end{equation}
+where $\rho(x) = -xf'_0(x)/f_0(x)$. If the data are normally distributed, we get $\rho(t) = t^2$, which gives 
+\begin{equation}
+    \hat \sigma_{MLE} = \sqrt{\frac{1}{n} \sum_{i=1}^n (x_i - \bar x)^2}
+\end{equation}
+which is the sample standard deviation which we all know and love. Notice that the size of $\rho(x_i/\hat \sigma)$ grows rapidly the further the observation is from the bulk of the data. In the context of contaminated data, this effectively gives outliers an oversized impact on the scale estimate. Instead, it may be desirable to consider alternative estimator that does not allow outlying points to have such a significant impact. 
+
+A natural approach is to consider a $\rho$ function in (\ref{eq:mleScale}) that does not weight atypical values so heavily. This is the approach taken by \textit{M-estimators of scale}, where M stands for "maximum likelihood type". An M-estimator of scale $\hat \sigma$ is any estimator satisfying
+\begin{equation}
+    \label{eq:mScale}
+    \frac{1}{n} \sum_{i=1}^n \rho(x_i/\hat \sigma) = \delta,\ \ 0 < \delta \leq 1.
+\end{equation}
+By the law of large numbers, $\frac{1}{n} \sum_{i=1}^n \rho(x_i/\hat \sigma) \xrightarrow{} E(\rho(x_i/\hat \sigma))$ almost surely as $n \xrightarrow{} \infty$. When choosing a $\rho$ function, we wish to maintain consistency and low asymptotic variance relative to the MLE under normality, or efficiency, while gaining robustness. This can be done by choosing a bounded $\rho$ function that is close to $t^2$ near the origin, such as the $\rho$ function corresponding to Tukey's biweight function, given by
+\begin{align}
+    \rho'(t) = \psi(t)  =
+    \begin{cases}
+        t(1-t^2/c^2)^2; &\ \ |t| < c \\
+        0 &\ \ |t| \geq c
+    \end{cases}\ .
+\end{align}
+We will also want to choose a $\rho$ function such that $\sigma$ converges to the standard deviation under normality. For Tukey's biweight function, this corresponse to $c = 1.56$. In this report we will only consider $\rho$ functions with the following properties.
+\newtheorem{defn}{Definition}[section]
+\begin{defn}
+    We will consider $\rho$-functions that have the following properties:
+    \begin{enumerate}[(R1)]
+        \item $\rho(t)$ is continuously differentiable, symmetric, and non-decreasing in $|t|$
+        \item $\rho(0) = 0$
+        \item $\rho(t)$ is bounded.
+    \end{enumerate}
+\end{defn}
+The requirement of continuous differentiability is generally not required for a good estimate, but makes later proofs much more simple. Notably, $\rho(t) = |t|$ is not differentiable at zero.
+
+\subsection{Existence and Uniqueness}
+
+First, we will consider the existence and uniqueness of solutions to (\ref{eq:mScale}). We assume that $\sigma$ is in an open interval from $0$ to $\infty$. For convenience, rewrite (\ref{eq:mScale})
+\begin{equation}
+\label{eq:psiFcn}
+    g(\sigma) = \sum_{i=1}^n \Psi(x_i,\sigma) = 0 \text{  where  }\Psi(x,\sigma) = \rho(x/\sigma) - \delta.
+\end{equation}
+The following theorem \cite{maronna2019robust} states that the M-estimate of scale under the regularity conditions exists and is unique.
+
+\newtheorem{thm}{Theorem}[section]
+\begin{thm}
+\label{thm:mEstExUn}
+Under the regularity conditions (R1)-(R3), we have
+(i) there exists at least one point $\hat\sigma$ where $g(\sigma)\geq 0$ for $\sigma > \hat\sigma$ and $g(\sigma)\leq 0$ for $\sigma < \hat\sigma$,
+(ii) the set of such points is an interval,
+ $g(\hat\sigma) = 0$, and
+ $\hat\theta$ is unique.
+\end{thm}
+
+\begin{proof}[Proof]
+This proof is based on that in \cite{maronna2019robust}, adapted to be specific to M-estimates of scale. It is clear from (\ref{eq:psiFcn}) that
+$ \lim_{\sigma \xrightarrow{} 0} \Psi(x,\sigma) = -\delta < 0 < 1-\delta =  \lim_{\sigma \xrightarrow{} \infty} \Psi(x,\sigma) $
+\end{proof}
+The monotonicity of $g(\sigma)$ implies (i) and that all values of $\sigma$ for which $g(\sigma) = 0$ must be in an interval. If $g(\sigma) \not= 0$ for any $\sigma$, then the monotonicity of $g$ implies that only one point exists satisfying (i), giving (ii). The continuity of $\rho(t)$ implies that $g(\sigma)$ is continuous in $\sigma$. As $g(\sigma)$ is continuous in $\sigma$, intermediate value theorem implies (iii). From (R1), $\rho(x/\sigma)$ is non-decreasing in $\sigma$, which implies (iv).
+
+\subsection{Consistency}
+
+Let $x_1,\hdots,x_n$ be i.i.d with the parametric distribution $F_{\sigma_F}$. We will wish to show that $\hat\sigma_n$ converges in probability to $\sigma_F$. For convenience, define
+\begin{equation}
+\label{eq:lambdaFcn}
+    \lambda_F(\sigma) = E_F \Psi(x,\sigma),\ \ 
+    \hat\lambda_n(\sigma) = \frac{1}{n}\sum_{i=1}^n\Psi(x_i,\sigma).
+\end{equation}
+
+\begin{thm}
+\label{thm:mScaleLemma}
+There exists a $\sigma_F$ such that $\lambda_F(\sigma_F) = 0$.
+\end{thm} 
+\begin{proof}[Proof.]
+This proof is based on that in \cite{maronna2019robust}, adapted to be specific to M-estimates of scale. As $\Psi$ is bounded, Bounded Convergence Theorem implies,
+$$ \lim_{\sigma\xrightarrow{} 0} E_F \Psi(x,\sigma) = E_F \lim_{\sigma\xrightarrow{} 0} \Psi(x,\sigma)  = -\delta < 0 < 1-\delta =  \lim_{\sigma\xrightarrow{} 0} E_F \Psi(x,\sigma)$$
+ $\lambda_F$ is continuous and monotonic in $\sigma$ so, similar to the proof for Theorem \ref{thm:mEstExUn}, intermediate value theorem implies that there exists a $\sigma_F$ such that $\lambda_F(\sigma_F) = 0$.
+\end{proof}
+
+\begin{thm}
+\label{thm:mScaleConsist} 
+If $\sigma_F$ is unique, then $\hat\sigma_n$ tends in probability to $\sigma_F$.
+\end{thm}
+\begin{proof}[Proof.]
+This proof is based on that in \cite{maronna2019robust}, adapted to be specific to M-estimates of scale. By definition, $\lambda_F = E_F \Psi(x,\sigma)$, so the Law of Large Numbers implies that
+$$ \hat\lambda_n(\sigma_F - \epsilon) \xrightarrow{p} \lambda_F(\sigma_F - \epsilon) \text{ as } n \xrightarrow{} \infty.$$
+
+Using the same argument as the proof in Theorem \ref{thm:mEstExUn}, $\hat\lambda_n$ is non-increasing. Theorem \ref{thm:mEstExUn} implies that $\sigma_F$ is unique. Thus $\hat\sigma_n < \sigma_F - \epsilon$ for $\epsilon > 0$ implies that $\hat\lambda_n(\sigma_F - \epsilon) < 0$.
+Also, $\lambda_F$ is decreasing and $\lambda_F(\sigma_F) = 0$ so $\lambda_F(\sigma_F - \epsilon) > 0$. Hence,
+$$ P(\hat\sigma_n < \sigma_F - \epsilon) \leq P(\hat\lambda_n(\sigma_F - \epsilon) < 0)$$
+for all $n$. Therefore,
+$$\lim_{n\xrightarrow{} \infty} P(\hat\sigma_n < \sigma_F - \epsilon)  \leq P(\lambda_F(\sigma_F - \epsilon) < 0) = 0.$$
+Using similar arguments, we can show $P(\hat\sigma_n > \sigma_F + \epsilon) = 0$. Thus, by definition, $\hat\sigma_n \xrightarrow{} \sigma_F$.
+\end{proof}
+
+\subsection{Breakdown Point}
+
+In this section, we will derive the breakdown point of an M-estimator of scale. Due to length constraints, we will restrict our attention to the asymptotic breakdown point. We will consider the contamination model in (\ref{eq:contamNeigh}). We will consider the case where $\calG$ is the set of point mass distributions. Let $x_1, x_2, \hdots, x_n$ be i.i.d observations with distribution, 
+$$ F_\epsilon = (1-\epsilon)F + \epsilon G.$$
+We will consider the scale estimator $\sigma_\epsilon \in [0, \infty]$.
+
+\begin{thm}
+Under the regularity conditions (R1)-(R3) and Let $\lim_{t\xrightarrow{}\infty} \rho(t) = 1$. The asymptotic breakdown point of M-estimates of scale is,
+$$ \epsilon^* = min(\delta,1-\delta) $$
+\end{thm}
+\begin{proof}[Proof.]
+This proof is based on that in \cite{maronna2019robust}, adapted to be specific to M-estimates of scale. Recall that $ \sigma_\epsilon = \lim_{n \xrightarrow{} \infty} \hat \sigma_n(F_\epsilon) $ is the implicit solution to $E_{F_\epsilon} (\rho(x/\hat\sigma_\epsilon) - \delta) = 0$
+
+Separating the expectation and letting $G = \delta_{x_0}$,
+\begin{equation}
+\label{eq:asympBPEq}
+    (1-\epsilon) E_F (\rho(x/\hat\sigma_\epsilon)) - \delta) + \epsilon(\rho(x_0/\hat\sigma_\epsilon) - \delta) = 0
+\end{equation}
+We will find the breakdown point by finding an upper and lower bound of $\epsilon^*$ and showing that they are equal. Let $\epsilon < \epsilon^*$. This implies that $\hat \sigma_\epsilon$ is bounded. Hence
+\begin{equation}
+    \lim_{x_0 \xrightarrow{} \infty} \rho(x_0/\hat\sigma_\epsilon) - \delta = 1 - \delta \text{ and } \lim_{x_0 \xrightarrow{} 0} \rho(x_0/\hat\sigma_\epsilon) - \delta = - \delta
+\end{equation}
+Let $x_0 \xrightarrow{} \infty$ in (\ref{eq:asympBPEq}). By (R2), $\rho(t) \geq 0$ so
+\begin{equation}
+\label{eq:asympBPEq}
+    0 = (1-\epsilon) E_F (\rho(x/\hat\sigma_\epsilon)) - \delta) + \epsilon(1 - \delta) \geq (1-\epsilon) (-\delta) + \epsilon(1 - \delta) \implies \epsilon \leq \delta
+\end{equation}
+Now, let $x_0 \xrightarrow{} 0$ in (\ref{eq:asympBPEq}). We have , $\rho(t) \leq 1$ so
+\begin{equation}
+\label{eq:asympBPEq}
+    0 = (1-\epsilon) E_F (\rho(x/\hat\sigma_\epsilon)) - \delta) + \epsilon(- \delta) \leq (1-\epsilon) (1 -\delta) + \epsilon( - \delta) \implies \epsilon \leq 1 - \delta
+\end{equation}
+Hence, $\epsilon \leq \min(\delta,1-\delta)$. Now, let $\epsilon > \epsilon^*$. This implies that there exists a subsequence $G_n$ such that $\hat \sigma_{\epsilon,n}$ is unbounded. Suppose that this contains a subsequence such that $\hat \hat \sigma_{\epsilon,n}$ tends to $\infty$. Then $\rho(x/\hat\sigma_\epsilon) \xrightarrow{} 0$ so clearly $\rho(x/\hat \sigma_{\epsilon,n}) -\delta \leq 1-\delta$ for each $x$. Then (\ref{eq:asympBPEq}) implies
+\begin{equation}
+\label{eq:asympBPEq}
+    0 \leq (1-\epsilon) \lim_{n \xrightarrow{} \infty} E_F (\rho(x/\hat \sigma_{\epsilon,n})) - \delta) + \epsilon(1 - \delta).
+\end{equation}
+Under regularity conditions, $\rho(x/\hat \sigma_{\epsilon,n})$ is bounded, so Bounded Convergence Theorem implies
+\begin{equation}
+\label{eq:asympBPEq}
+    0 \leq (1-\epsilon) ( - \delta) + \epsilon(1 - \delta) \implies \epsilon \geq \delta.
+\end{equation}
+Similarly, as $\rho(x/\hat \sigma_{\epsilon,n}) -\delta \geq -\delta$ for each $x$ (\ref{eq:asympBPEq})  and Bounded Convergence Theorem imply
+\begin{equation}
+\label{eq:asympBPEq}
+    0 \geq (1-\epsilon) (1 - \delta) + \epsilon( - \delta) \implies \epsilon \geq 1 - \delta.
+\end{equation}
+Hence, $\epsilon \geq \min(\delta, 1 - \delta)$. The upper and lower bound are equal so $\epsilon^* = \min(\delta, 1 - \delta)$.
+\end{proof}
+
+\subsection{Asymptotic Normality and Efficiency}
+
+Asymptotic efficiency is used to measure the performance of an estimator for uncontaminated data. The formal definition of asymptotic efficiency is given in Definition \ref{def:asympEff}. Hence, we will show that an M-estimate of scale is asymptotically normal, find the asymptotic variance, and calculate the asymptotic efficiency.  We will use the notation from (\ref{eq:psiFcn}) and in (\ref{eq:lambdaFcn},
+\begin{thm}
+\label{thm:mScaleAsympNormaliy}
+Consider the set of observations $x_1, x_2,  \hdots, x_n$ which are iid and $x_i \sim F$ with variance $\sigma_F^2$ and mean zero. Let $A = E \Pse(x,\sigma_F)^2$ and $B = \lambda'(\sigma_F)$. Assume that $A < \infty$. Then
+$$ \sqrt{n} (\hat\sigma_n - \sigma_F) \xrightarrow{d} N(0,\nu) $$
+where $\nu = A/B^2$. Further, if $\Dot{\Psi}(x,\sigma) = \partial \Psi(x,\sigma)/\partial \sigma$ is dominated by some function $K(x)$ for all $\sigma$ such that $\E K(x) < \infty$ then $B = \E \Dot{\Psi}(x,\sigma)$
+\end{thm}
+\begin{proof}
+This proof is based on that in \cite{maronna2019robust}, adapted to be specific to M-estimates of scale. By assumption, $\Dot{\Psi}(x,\sigma)$ is dominated by $K(x)$ so Dominated Convergence Theorem implies that $B = \E_F \Dot{\Psi}(x,\sigma)$, proving the second statement. To prove the first statement, we will perform a second Taylor expansion of $\Dot{\Psi}(x,\hat\sigma_n)$ about the true value, $\sigma_F$, and find the asymptotic distribution of the result. The Taylor expansion at $\sigma_F$ is given by
+$$ \Psi(x,\hat\sigma_n) = \Psi(x,\hat\sigma_F) + (\hat\sigma_n - \sigma_F) \Dot{\Psi}(x,\hat\sigma_n) + \frac{1}{2} (\hat\sigma_n - \sigma_F)^2 \ddot{\Psi}(x,\sigma_i)$$.
+with $\sigma_i \in (\hat\sigma_n, \sigma_F)$. Taking this expression at each $x_i$ and taking the average across all $i$, we get
+$$\frac{1}{n} \sum_{i=1}^n \Psi(x_i,\hat\sigma_F) + (\hat\sigma_n - \sigma_F) \frac{1}{n} \sum_{i=1}^n \Dot{\Psi}(x_i,\hat\sigma_n) + \frac{1}{2} (\hat\sigma_n - \sigma_F)^2 \frac{1}{n} \sum_{i=1}^n \ddot{\Psi}(x_i,\sigma_i) = 0 $$
+$$= A_n + B_n (\hat\sigma_n - \sigma_F) + C_n (\hat\sigma_n - \sigma_F)^2$$
+Solving for $\sqrt{n} (\hat\sigma_n - \sigma_F)$, we find
+$$ \sqrt{n} (\hat\sigma_n - \sigma_F) = -\sqrt{n}A_n/(B_n + (\hat\sigma_n - \sigma_F) C_n) $$
+First, consider $(\hat\sigma_n - \sigma_F) C_n$. From Theorem \ref{thm:mScaleLemma}, we have $\Psi(x_i,\hat\sigma_F)$ are iid with mean 0. Theorem \ref{thm:mScaleConsist} states that $\hat\sigma_n \xrightarrow{p} \sigma_F$ so Slutzky's Theorem implies $\hat\sigma_n -\sigma_F \xrightarrow{p} 0$. By assumption, $C_n$ is bounded, so Slutzky's Theorem implies $(\hat\sigma_n - \sigma_F) C_n \xrightarrow{p} 0$. Second, consider $B_n$. The Law of Large Numbers implies that $B_n\xrightarrow{p} B$. Finally, Central Limit Theorem implies that $A_n \xrightarrow{d} N(0,A)$. Hence, Slutzky's Theorem implies,
+$$ \sqrt{n} (\hat\sigma_n - \sigma_F) \xrightarrow{d} N( 0, A/B^2 ) $$
+\end{proof}
+\noindent Using this result, the asymptotic efficiency can be easily found.
+\begin{thm}
+Consider the set of normal distributions with mean zero. The asymptotic efficiency of the M-estimator of scale, $\hat\sigma$ is given by,
+$$ p_{eff}(\sigma) = \nu_{MLE}(\sigma)/\nu(\sigma) = 2B^2/\sigma^2A $$
+\end{thm}
+\begin{proof}[Proof.]
+The asymptotic variance of the MLE of the standard deviation under normality is well known to be $\hat\sigma_{MLE} = \sigma^2/2$. The asymptotic efficiency is simple to calculate from Theorem \ref{thm:mScaleAsympNormaliy}.
+\end{proof}
