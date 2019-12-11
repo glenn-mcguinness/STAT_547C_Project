@@ -5,46 +5,48 @@
 \section{Background}
 
 \subsection{Introduction}
-All statistical methods make some assumptions about the structure of the data. A common assumption is that of normality. These assumptions are intended to be good approximations of the real world. However, such assumptions are commonly violated in small and large ways and we would still like "good" performance. Many statistical methods are not commonly evaluated with a class of distributions beyond those that were assumed. Unsurprisingly, many classical methods can fail, sometimes spectacularly, when even a small portion of data follows a significantly different distribution.
+All statistical methods make assumptions about the structure of the data. These assumptions are intended to be good approximations of the real world. However, such assumptions are commonly violated in small and large ways and we would still like "good" performance. Many statistical methods are only commonly evaluated with a narrow class of "well-behaved" distributions, such as normal distributions. Unsurprisingly, many classical methods fail, sometimes spectacularly, when even a small portion of data follows a significantly different distribution.
 
-Robust statistical methods are intended to create statistical methods that perform well for data following a broader class of distributions than those considered in classical statistics. Data are frequently normally distributed about the centre, but with heavier tails. This type of data frequently gives rise to outliers. Outliers are atypical observations that lie far from the bulk of the data. A small proportion of such data can lead to significantly different results from that with an outlier-free, or uncontaminated, dataset. 
+Robust statistics is the study of statistical methods that perform well for data following a broader class of "bad" distributions than those considered in classical statistics. Data are frequently normally distributed about the centre, but have heavy tails. This type of data frequently gives rise to \textit{outliers}. Outliers are atypical observations that lie far from the bulk of the data. A small proportion of such data can lead classical methods to have significantly different estimates from the same data with the outliers removed. 
 
-Outliers are particularly insidious for regression data. Problematic outliers are often obvious in univariate data. However, outliers in regression datasets may deviate from the predominant trend in the data, but not appear atypical in any individual variable. As the number of response variables grows, such outliers quickly become very difficult to identify manually. Robust regression methods offer reliable performance in the presence of such outliers, avoiding the pitfalls inherent in working with data of unknown quality.
+Outliers are particularly insidious for regression. Problematic outliers can often be managed with simple method in univariate data. For example, trimming off some upper and lower quartile of the data. However, in regression datasets, outliers may not appear atypical in any individual variable, but deviate from the predominant trend in the data. As the number of response variables grows, such outliers quickly become very difficult to identify with simple rules. Robust regression methods offer reliable performance when outliers can not be easily detected, avoiding the pitfalls inherent in working with data of unknown quality.
 
-A common model for representing data with outliers, or contaminated data, is the Tukey-Huber contamination model \cite{alqallaf2009propagation}. For this report, we will restrict our focus to parametric models. In the Tukey-Huber contamination model, we assume that the data follow some "good" parametric distribution $F_\theta$ with probability $1-\epsilon$ and some "outlier" distribution $G$ with probability $\epsilon$. We consider the performance of our estimator $\hat \theta$ in the context of a \textit{contamination neighbourhood}
+A common model for representing data with outliers, or \texit{contaminated data}, is the Tukey-Huber contamination model \cite{alqallaf2009propagation}. In the Tukey-Huber contamination model, we assume that the data follow some "good" parametric distribution $F_\theta$ with probability $1-\epsilon$ and some "outlier" distribution $G$ with probability $\epsilon$. We consider the performance of our estimator $\hat \theta$ in the context of a \textit{contamination neighbourhood}
 \begin{equation}
 \label{eq:contamNeigh}
     \calF(F,\epsilon) = \{ (1-\epsilon)F + \epsilon G : G \in \calG \}.
 \end{equation}
 For simplicity, $\calG$ is frequently assumed to be the set of point mass distributions.
 
-This report provides an overview of the robustness properties \textit{S-estimators for linear regression} \cite{rousseeuw1984robust}. S-estimators are highly robust with a number of desirable properties. They are most frequently used as the initial estimate for MM-estimators \cite{yohai1987high}, a popular robust regression estimator. First, we will present M-estimators of scale, which are the central element of S-estimators. Second, we will discuss the breakdown point and asymptotic efficiency, measures of robustness and performance, respectively. Finally, we will prove several important properties of S-estimators for linear regression.
+This report provides an overview of the robustness properties of \textit{S-estimators for linear regression} \cite{rousseeuw1984robust}, for which it is necessary to also review \texit{M-estimates of scale} \cite{maronna2019robust}. S-estimators are highly robust with a number of desirable properties. They are most frequently used as the initial estimate for MM-estimators \cite{yohai1987high}, a popular class robust regression estimators. First, we will present M-estimators of scale, which are a central element of S-estimators and their breakdown point and asymptotic efficiency, measures of robustness and performance, respectively. Second, we will do the same for S-estimators for linear regression. Finally, we will propose a new S-estimator as a possible new research direction.
 
 
 \subsection{Robustness Properties}
 
-So far, we have discussed robustness in a vague sense. Intuitively, a robust estimator must perform well when data deviates from a "good" distribution and not perform significantly worse than a classical estimator on "good" data. We will focus on the \textit{breakdown point} to measure robustness and \textit{efficiency} to measure performance on "good" data.
+So far, we have discussed robustness in a vague sense. Intuitively, a robust estimator must perform well when data deviates from a "good" distribution and not perform significantly worse than a classical estimator on "good" data. Common measures of robustness are developed to quantify this intuition. This section will present the formal definitions of properties that are commonly considered for robust estimator. In particular, this section will present the \textit{breakdown point} to measure robustness and \textit{efficiency} to measure performance.
 
 We assume the distribution of the data lies in the contamination neighbourhood described in equation (\ref{eq:contamNeigh}). The breakdown point (BP) can be defined asymptotically and for finite sample.
 \newtheorem{defn}{Definition}[section]
 \begin{defn}
 \label{def:asympBP}
-Consider the parametric distribution family $F_\theta$ with parameter space $\Theta$. The \textbf{asymptotic contamination breakdown point} of estimator $\hat \theta$ at $F$, denoted by $\epsilon^*(\hat \theta, F)$ is the largest  $\epsilon^* \in (0,1)$ such that for all $\epsilon < \epsilon^*$, $\lim_{n\xrightarrow{}\infty}\hat\theta((1-\epsilon)F + \epsilon F)$ does not lie on the boundary of the parameter space $\Theta$ for all $G \in \calG$. \cite{maronna2019robust}
+Consider the parametric distribution family $F_\theta$ with parameter $\theta \in \Theta$. The \textbf{asymptotic contamination breakdown point} of estimator $\hat \theta$ at $F$, denoted by $\epsilon^*(\hat \theta, F)$ is the largest  $\epsilon^* \in (0,1)$ such that for all $\epsilon < \epsilon^*$, $$\lim_{n\xrightarrow{}\infty}\hat\theta((1-\epsilon)F + \epsilon F)$$ does not lie on the boundary of the parameter space $\Theta$ for all $G \in \calG$. \cite{maronna2019robust}
 \end{defn}
-Unfortunately, only finite samples are available in practice. The \textit{finite sample breakdown point} (FBP) may therefore be more useful in practice.
+Unfortunately, it takes a very long time to collect an infinite number of observations. The \textit{finite sample breakdown point} (FBP) may therefore be more useful in practice.
 \begin{defn}
 \label{def:finiteBP}
 Consider the parametric distribution family $F_\theta$ with parameter space $\Theta$. Let $\partial \Theta$ denote the boundary of the parameter space. Let $\calX_m$ be the set of all datasets of size $n$ that have $n-m$ elements in common with $x$. The \textbf{replacement finite sample contamination breakdown point} of estimator $\hat \theta_n$ at $x$ is $$\epsilon_n^*(\hat \theta_n, x) = \frac{m^*}{n},$$ where
-$$m^* = max\{ m \geq 0 : \hat \theta_n(x) \text{ bounded and } \theta_n(x) \cap \partial \Theta = \emptyset\ \forall y \in \calX_m\}.$$ \cite{maronna2019robust}
+%$$m^* = max\{ m \geq 0 : \hat \theta_n(x) \text{ bounded and } \theta_n(x) \cap \partial \Theta = \emptyset\ \forall y \in \calX_m\}.$$ 
+$m^*$ is the largest integer such that $\hat \theta_n(x)$ is bounded and does not lie on the boundary of $\Theta$. \cite{maronna2019robust}
 \end{defn}
-A good breakdown point is not sufficient for a good estimator. For example, an estimator of $\hat \theta = 5$ has an asymptotic breakdown point of $\epsilon^* = 1$. Some measure of the variance of an estimate is required.
+However, a high breakdown point is not sufficient for an estimator to be useful. For example, an estimator of $\hat \theta = 5$ has an asymptotic and finite sample breakdown point of $\epsilon^* = 1$. However, I expect you would not be able to convince a colleague that an always-$5$ estimator should be used to estimate the mean of a sample. Some measure of the variance of an estimator is also required.
 \begin{defn}
 \label{def:asympEff}
 Consider the parametric distribution family $F_\Theta$. Let $\hat \theta$ be a consistent estimator and $\sqrt{n} (\hat \theta - \theta) \xrightarrow{d} N(0,\nu(\theta,\hat\\theta))$. Let $\hat \Theta$ be some class of estimators of $\theta$. Let
 $$\nu_{min}(\theta) = \min\{ \nu(\hat\theta,\theta) : \hat\theta \in \hat\Theta \}$$.
 The \textbf{asymptotic efficiency} of $\hat \theta$ at $\theta$ is defined as
 $$ p_{eff}(\theta) = \frac{\nu_{min}(\theta)}{\nu(\theta)}. $$
+Where $p_{eff}(\theta) \in (0,1)$. \cite{maronna2019robust}
 \end{defn}
-Considered together, the BP and the asymptotic efficiency are a useful and popular method to evaluate robustness and performance of estimators in robust statistics.
+Considered together, the BP and the asymptotic efficiency are useful properties when evaluating the robustness and performance of estimators.
 
 % ...

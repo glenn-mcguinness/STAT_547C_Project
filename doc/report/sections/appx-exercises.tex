@@ -4,7 +4,7 @@
 
 \section{Exercises}
 
-Two exercises are presented in this section. The first exercises presents a straightforward robustness and consistency proof. Breakdown point proofs can quickly become complex, so the available options were limited. The consistency proof for the median absolute deviation is simple, but not trivial. The second exercise is an existence proof from literature \cite{croux1994generalized} that, while short, can require some thought. The median was frequently used in the report, so these exercises aim to familiarize students on how to work with medians.
+Two exercises are presented in this section. The first exercises presents a straightforward robustness and consistency proof. Breakdown point proofs can quickly become complex, so the available options were limited, but I think that the median absolute deviation is a good choice. The breakdown point derivation and consistency proof for the median absolute deviation are simple, but require a clear understanding of the problems. The second exercise is an existence proof from literature \cite{croux1994generalized} that, while short, requires some thought.
 
 \subsection*{Exercise 1}
 
@@ -14,7 +14,7 @@ The definition of the median absolute deviation (MAD) estimator of scale is give
 \begin{equation}
     \hat\sigma = c\med_i |x_i - \med_i x_i|
 \end{equation}
-for some $c \in \bbR$. For simplicity, assume that $\med_i x_i = 0$, $n$ is odd, and $x_i \not= x_j$ for all $i \not= j$.
+for some $c \in \bbR$. For simplicity, in this problem we will assume that $\med_i x_i = 0$, $n$ is odd, and $x_i \not= x_j$ for all $i \not= j$.
 \begin{enumerate}[(i)]
     \item What is the finite sample breakdown point? 
     \item Assume $x \sim N(0,\sigma^2)$. When is $\hat\sigma$ a consistent estimator of the standard deviation?
@@ -22,18 +22,16 @@ for some $c \in \bbR$. For simplicity, assume that $\med_i x_i = 0$, $n$ is odd,
 
 \subsubsection*{Solutions}
 
-(i)\\
+(i)
 
 \noindent Consider a  set of observations with $m = (n-1)/2$ arbitrary values.
-By definition, for $n$ odd, $#\{i : |x_i| < \med_i |x_i|\} = (n-1)/2$. Hence, if $|x_i| < M$ for some $M\in\bbR$ for $(n+1)/2$ observations, then $\med_i |x_i| < M$. The non-arbitrary values are bounded by the largest observation plus one, which implies $m^* >= (n-1)/2$.\\
+By definition, for $n$ odd, $$\#\{i : |x_i| < \med_i |x_i|\} = (n-1)/2.$$ Hence, if $|x_i| < M$ for some $M\in\bbR$ for $(n+1)/2$ observations, then $\med_i |x_i| < M$. The non-arbitrary values are bounded by the largest observation plus one, which implies $m^* >= (n-1)/2$.
 
-\noindent Next, consider a dataset with $(n+1)/2$ observations replaced with arbitrary values. If we take all of these values to be equal to $x_0$ and take $x_0 \xrightarrow{} \infty$, then $\med_i x_i \xrightarrow{} \infty$, which implies $m^* <= (n-1)/2$.\\
+\noindent Next, consider a dataset with $(n+1)/2$ observations replaced with arbitrary values. If we take all of these values to be equal to $x_0$ and take $x_0 \xrightarrow{} \infty$, then $\med_i x_i \xrightarrow{} \infty$, which implies $m^* <= (n-1)/2$. Hence, $\epsilon^* = m^*/n = 1 - (1/2)n$, which goes to $0.5$ as $n \xrightarrow{} \infty$.
 
-\noindent Hence, $\epsilon^* = m^*/n = 1 - (1/2)n$, which goes to $0.5$ as $n \xrightarrow{} \infty$.\\
+\noindent (ii)
 
-\noindent (ii)\\
-
-\noindent We will first show that $P(|\hat\sigma - \sigma| > \varepsilon) = 0$ for all $\varepsilon > 0$ for some $c \in \bbR_+$ and then consider $\sigma$. Let $\nu$ be the true median and $\varepsilon \in \bbR \ \{0\}$. Then, 
+\noindent We will first show that $\med_i|x_i| =\xrightarrow{p} F^{-1}_{|X|}(0.5)$ for all $\varepsilon > 0$ for some $c \in \bbR_+$. Let $\nu$ be the true median and $\varepsilon \in \bbR \ \{0\}$. Then, 
 \begin{equation*}
     P(c\med_i|x_i| > \nu + \varepsilon)\ (*)
 \end{equation*} 
@@ -58,26 +56,25 @@ and thus $P(|c\med_i|x_i| - \nu| + \varepsilon) = 0$. We assume that $x_i\sim N(
 The least quartile difference estimator for linear regression (LQD-estimator) \cite{croux1994generalized} is defined as,
 $$ \hat\bb = \argmin_{\bb \in \bbR^p} Q_n(r_1,\hdots,r_n), $$
 $$ Q_n = \{|r_i - r_j|; i < j \}_{\binom{h_p}{2}:\binom{n}{2}} $$
-where $r_i$ is the residual of the $i$th case and $h_p = (n+p+1)/2$. This notation means that $Q_n$ is the $\binom{h_p}{2}$ order statistic of the set $\{|r_i - r_j|; i < j \}$ among the $\binom{n}{2}$ elements in the set. \\
+where $r_i$ is the residual of the $i$th case and $h_p = (n+p+1)/2$. $Q_n$ is the $\binom{h_p}{2}$ order statistic of the set $\{|r_i - r_j|; i < j \}$ among the $\binom{n}{2}$ elements in the set. 
 
-The LQD-estimator is a special case of a Generalized S-estimator, defined as the minimizer of a more general class of functions of residuals. Assume that none of the differences $(\bx_i- \bx_j, y_i - y_j)$ lie on the same vertical hyperplane in $\bbR^p$. A vertical hyperplane is defined as a plane passing through $(\boldsymbol{0},0)$ and $(\boldsymbol{0},1)$.\\
+\noindent The LQD-estimator is a special case of a Generalized S-estimator, defined as the minimizer of a more general class of functions of residuals. Assume that none of the differences $(\bx_i- \bx_j, y_i - y_j)$ lie on the same vertical hyperplane in $\bbR^p$. A vertical hyperplane is defined as a plane passing through $(\boldsymbol{0},0)$ and $(\boldsymbol{0},1)$.
 
-Prove the existence of the LQD estimator. $Q_n (\bb)$ is continuous, so it is sufficient to show that there exists a compact ball $\calB$, such that for any $\bb_1 \in \calB$ and $\bb2 \in \bbR^{p+1} \ \calB$ that $Q_n (\bb_1) < Q_n (\bb_2)$.
-\\
+\noindent Prove the existence of the LQD estimator. $Q_n (\bb)$ is continuous, so it is sufficient to show that there exists a compact ball $\calB$, such that for any $\bb_1 \in \calB$ and $\bb2 \in \bbR^{p+1} \ \calB$ that $Q_n (\bb_1) < Q_n (\bb_2)$.
 
-\textbf{\textit{Hint:}} For the $i$th order statistic of some sequence $r_1,r_2,\hdots,r_n$, if $#{j:r_j > M} = n-i+1$ for some $M\in\bbR$ then $r_{(i)} > M$.
+\noindent \textbf{\textit{Hint:}} For the $i$th order statistic of some sequence $r_1,r_2,\hdots,r_n$, if $\#\{j:r_j > M\} = n-i+1$ for some $M\in\bbR$ then $r_{(i)} > M$.
 
 \subsubsection*{Solutions}
 
-This solution relies heavily on the proof in \cite{croux1994generalized}. It is about as simple as an existence proof gets, so I believe it is a reasonable exercise. The key for this proof is to consider $Q_n(\bb)$ at a $\bb$ for which we have a known bound and then construct a ball for which $|r_i - r_j|$ exceeds this bound for at least $(\binom{n}{2} - \binom{h_p}{2} + 1)$ observations (as $Q_n$ is an order statistic).\\
+This solution relies heavily on the proof in \cite{croux1994generalized}. It is about as simple as an existence proof gets, so I believe it is a reasonable exercise. The key for this proof is to consider $Q_n(\bb)$ at a $\bb$ for which we have a known bound and then construct a ball around this point for which $|r_i - r_j|$ exceeds the bound for at least $(\binom{n}{2} - \binom{h_p}{2} + 1)$ observations (as $Q_n$ is an order statistic).
 
 \noindent Let $M = \max_{i<j} |y_i - y_j|$. This corresponds to the maximum difference between residuals for $||\beta|| = 0$. The reverse triangle inequality implies that,
 $$ |r_i - r_j| \geq ||x_i'\bb - x_j'\bb| - |y_i - y_j||.$$
-Let $\boldsymbol{\theta} = \bb / ||\bb||$. This gives
+Let $\boldsymbol{\theta} = \bb / ||\bb||$.
 $$ = ||x_i'\boldsymbol{\theta} - x_j'\boldsymbol{\theta}| ||\bb|| - |y_i - y_j||. (*)$$
-This is where the fact that the observations are in the general position becomes important. By definition, this implies that there exists no $p-1$ dimensional subspace of the plane $y=0$ on which $\binom{h_p}{2}$ points lie. As a result, 
+The fact that the observations are in the general position now becomes important. By definition of the general position, there exists no $p-1$ dimensional subspace of the plane $y=0$ on which $\binom{h_p}{2}$ points lie. As a result, 
 $$ \inf_{i<j} |x_i'\boldsymbol{\theta} - x_j'\boldsymbol{\theta}| = \delta > 0. $$
-If the observations were not in the general position, this would not be true. As this is true, let $||\bb|| = 2M/\delta + 1$,
+If the observations were not in the general position, this would not be true. Let $||\bb|| = 2M/\delta + 1$,
 $$ (*) \geq |x_i'\boldsymbol{\theta} - x_j'\boldsymbol{\theta}| ||\bb|| - M$$
 $$ \geq (2M/\delta + 1)\delta - M > M$$
 for $(\binom{n}{2} - \binom{h_p}{2} + 1)$ observations. Let $\calB(2M/\delta + 1)$ be ball of radius $2M/\delta + 1$ about $\bb = \boldsymbol{0}$. Thus for all $\bb_1 \in \calB(2M/\delta + 1)$ and $\bb_2 \in (\calB(2M/\delta + 1))^C$, 

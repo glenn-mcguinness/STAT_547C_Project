@@ -6,30 +6,29 @@
 
 \newtheorem{lem}{Lemma}
 
-Robust linear regression attempts to create estimators for linear regression that perform well for errors within a contamination neighbourhood. Similar to the M-estimate of scale, first consider the classical estimator and then consider how it can be extended. Consider the regression dataset $(y_i, \mathbf{x_i})$ with $\bx_i \in \bbR^p$ for $i = 1,\hdots,n$ iid observations follwing the linear regression model
+A useful robust linear regression method must perform well for data with a distribution given by a contamination neighbourhood. It must perform well when the data is entirely uncontaminated ($\epsilon = 0$) and when it is not. Therefore, it is reasonable to first consider classical estimators and then try to improve their robustness. Consider the regression dataset $(y_i, \mathbf{x_i})$ with $\bx_i \in \bbR^p$ for $i = 1,\hdots,n$ iid observations follwing the linear regression model
 \begin{equation}
 \label{eq:linRegr}
     y_i = \mathbf{x_i}' \boldsymbol{\beta} + \varepsilon_i,\ \ i = 1,2,\hdots,n
 \end{equation}
-where $\bb \in \mathbb{R}^p$ is the vector of coefficients to be estimated and $\varepsilon_i \sim (1-\epsilon)F + \epsilon G$ is an error random variable that is independent of $\bx_i$. The case where $\epsilon = 0$ and $F \sim N(0,\sigma^2)$ is considered with ordinary least squares (OLS). The OLS estimate is the maximum likelihood estimate under these assumptions and is given by
+where $\bb \in \mathbb{R}^p$ is the vector of coefficients to be estimated and $\varepsilon_i \sim (1-\epsilon)F + \epsilon G$ is the error, which is independent of $\bx_i$. The case where $\epsilon = 0$ and $F \sim N(0,\sigma^2)$ is assumed when deriving ordinary least squares (OLS). The OLS estimate is the maximum likelihood estimate is given by
 \begin{equation}
 \label{eq:ols}
     \hat \bb = \argmin_{\bb \in \bbR^p} \frac{1}{n} \sum_{i=1} r_i(\bb)^2
 \end{equation}
 where $r_i(\bb) = y_i - \bx_i'\bb$ is the residual of observation $i$. Similar to the M-estimate of scale, one approach to creating a robust estimator is to replace the square penalty with a more general $\rho$ function. This is called an M-estimator for linear regression. 
 
-M-estimators for linear regression have high asymptotic efficiency, but require that the data be normalized with a robust estimate of the scale of the residuals, $\hat\sigma$ which requires an estimate of $\bb$. Obviously, this presents a problem. One might consider a joint estimate for both $\bb$ and $\hat\sigma$, which does exist \cite{maronna2019robust}. However, such solutions are not robust to "leverage points", which are observations that are outlying in both the predictors and the responses.
+M-estimators for linear regression have high asymptotic efficiency, but require that the data be normalized with a robust estimate of the scale of the residuals, $\hat\sigma$. However, estimating the scale of the residuals requires an estimate of $\bb$. Obviously, this presents a problem. One might consider making a joint estimate for both $\bb$ and $\hat\sigma$. However, such solutions are not robust to "leverage points", which are observations that are outlying in both the predictors and the responses \cite{maronna2019robust}.
 
 An alternative approach is to notice that (\ref{eq:ols}) can also be interpreted to be minimizing an estimate of the scale of the residuals, namely the variance. A reasonable robust estimator might therefore estimate the $\bb$ which minimizes some robust estimate of the scale of the residuals. Indeed, that is the approach taken by S-estimators for linear regression \cite{rousseeuw1984robust}.
 
-In this section, we will consider $M$-estimates of scale defined as before, but with the additional restrictions on $\rho$ function. These restrictions are
+Specifically, S-estimators minimize the M-estimate of scale of the residuals, described in Section \ref{sec:mScale}. In addition to in Definition \ref{def:rho}, we will consider $\rho$ function with the following properties,
 \begin{enumerate}[(R1)]\addtocounter{enumi}{3}
-    \item there exists $c > 0$ such that $\rho$ is strictly increasing on $[0,c]$ and constant beyond $c$ with $\rho(c) \geq 1$.
+    \item There exists $c > 0$ such that $\rho$ is strictly increasing on $[0,c]$ and constant beyond $c$ with $\rho(c) \geq 1$.
     \item $K = \bbE_\Phi[\rho] = \frac{1}{2} \rho(c)$.
 \end{enumerate}
-The restrictions are slightly more strict than the standard definition of $\rho$ functions corresponding to redescending M-estimates \cite{maronna2019robust}, but are sufficient to include many common $\rho$ functions. It should be mentioned that, although $\rho(c)$ is not one, M-estimates of scale defined with (R3) and (R4) have an asymptotic breakdown point of $0.5$. In practice, $\rho(c)$ is generally set to $1$, so frequently $K=0.5$.
+The restrictions are slightly more strict than the standard definition of $\rho$ functions corresponding to redescending M-estimates \cite{maronna2019robust}, but are sufficient to include many common $\rho$ functions. It should be mentioned that, although $\rho(c)$ is not one, M-estimates of scale defined with (R3) and (R4) have an asymptotic breakdown point of $0.5$.
 
-The M-estima
 \begin{defn}
 \label{def:sEst}
 Consider the regression dataset $(y_i, \mathbf{x_i})$ with $\bx_i \in \bbR^p$ for $i = 1,\hdots,n$ iid observations. \textbf{S-estimates for linear regression} are defined by
@@ -39,21 +38,21 @@ Consider the regression dataset $(y_i, \mathbf{x_i})$ with $\bx_i \in \bbR^p$ fo
  \end{equation}
  where $s(\resid)$ is an M-estimate of scale defined by (\ref{eq:mScale}). \\
 \end{defn}
-
-We will now prove that for any $\rho$ satisfying conditions (R1), (R2), and (R3) that there always exists a solution to \ref{eq:sEst}. 
+% We will now prove that for any $\rho$ satisfying conditions (R1), (R2), and (R3) that there always exists a solution to \ref{eq:sEst}. 
 % Include this case in the proof, as it deals with the exact fit property.
-We will assume that all observations where $\x_i=0$ have been removed, as these points contain no information on $\bb$ and that no more than $\big[\frac{n}{2}\big]$ points lie on a $(p-1)$ dimensional subspace of $(y=0)$ that passes through the origin. Also, when we say the observations are in the general position when any $p$ points give a unique value for $\hat\bb$.
+We will assume that all observations where $\x_i=0$ have been removed, as these points contain no information on $\bb$ and that no more than $\big[\frac{n}{2}\big]$ points lie on a $(p-1)$ dimensional subspace of $(y=0)$ that passes through the origin. Also, when we say the observations are in the general position when any $p$ points give a unique value for $\hat\bb$. These restrictions greatly simplify the calculation of the breakdown point.
 
-First, we will construct bounds for $s(\resid)$ using $\med_{1\leq i \leq n}(|r_i|) $. We will then prove a solution always exists a solution to 
-\begin{equation}
-    \argmin_{\bb}\ \  \med_{1\leq i \leq n}(|r_i|),
-\end{equation}
-called the least median of squares estimate \cite{rousseeuw1984least}. The existence of the S-estimator then follows.
+The following Lemma is an important intermediate result. By constructing bounds for $s(\resid)$ using $\med_{1\leq i \leq n}(|r_i|) $, we can use existing results for medians to prove properties of S-estimators.
+% We will then prove a solution always exists a solution to 
+% \begin{equation}
+%     \argmin_{\bb}\ \  \med_{1\leq i \leq n}(|r_i|),
+% \end{equation}
+% called the least median of squares estimate \cite{rousseeuw1984least}. The existence of the S-estimator then follows.
 
 \newtheorem{lemma}{Lemma}
 \begin{lemma}
 \label{lem:mScaleBound}
-For each $\rho$ satisfying conditions (R1) to (R3) and for each $n \in \bbN$ there exists $\alpha,\beta \in \bbR$ such that the $s$ given by equation (\ref{eq:mScale}b ) satisfies
+For each $\rho$ satisfying conditions (R1) to (R3) and for each $n \in \bbN$ there exists $\alpha,\beta \in \bbR_+$ such that the $s$ given by equation (\ref{eq:mScale}) satisfies
 \begin{equation}
 \label{eq:sIneq}
     \alpha \med_{1\leq i \leq n}(\resida) \leq s(\resid) \leq \beta \med_{1\leq i \leq n}(\resida)
@@ -77,12 +76,14 @@ which implies $s \leq \beta \med_i |r_i|$ for $\beta = 1/\rho^{-1}(\rho(c)/(n+1)
 
 \subsection{Breakdown Point of S-estimators}
 
-The breakdown point (BDP) for a linear regression follows Definition \ref{def:finiteBP} for the finite BDP Definition \ref{def:asympBP} for the asymptotic breakdown point. In this section, we will consider the finite breakdown and observe the limit as $n \xrightarrow{} \infty$. Finding the BDP of S-estimators is more complicated than for M-estimates of scale. This is because an S-estimator is defined as the minimizer of a robust scale estimator that is implicitly defined. However, medians are commonly used in robust statistics so Lemma \ref{thm:mScaleLemma} provides a way to extend the properties of medians to M-estimates of scale and thus S-estimators. The property that we will need is given by Theorem 1 from \cite{rousseeuw1984least}, which is as follows,
+In this section, we will consider the finite breakdown ((\ref{def:finiteBP})) and observe the limit as $n \xrightarrow{} \infty$. Finding the BDP of S-estimators is more complicated than for M-estimates of scale as S-estimators are defined as the minimizer of an implicitly defined robust scale. However, medians are commonly used in robust statistics so Lemma \ref{thm:mScaleLemma} provides a useful means to extend the properties of medians to M-estimates of scale and thus S-estimators. The property that we will need is given by Theorem 1 from \cite{rousseeuw1984least}, which is as follows,
 \begin{lemma}
 \label{lem:lmsBDP}
-The least median of squares estimator is given by $\argmin_{\hat\bb} \med_i r_i^2$. If $p>1$ and the observations are in the general position, the breakdown point of the LMS is $([n/2] - p + 2)/n$ \cite{rousseeuw1984least}.
+The least median of squares estimator is given by 
+$\hat\bb_{LMS} = \argmin_{\bb \in \bbR^p} \med_i r_i^2.$ 
+If $p>1$ and the observations are in the general position, the breakdown point of the LMS is $([n/2] - p + 2)/n$ \cite{rousseeuw1984least}.
 \end{lemma}
-This can easily be extended to absolute values,
+\noindent The proof of this Lemma is given in \cite{rousseeuw1984least}. To use Lemma \ref{lem:mScaleBound}, this result must be extended to the minimizer of the median of the absolute values of the residuals.
 \begin{lemma}
 \label{lem:lmaBDP}
 The least median of absolute (LMA) estimator is given by $\argmin_{\hat\bb} \med_i |r_i|$. If $p>1$ and the observations are in the general position, the breakdown point of the LMS is $([n/2] - p + 2)/n$ \cite{rousseeuw1984least}.
@@ -90,21 +91,22 @@ The least median of absolute (LMA) estimator is given by $\argmin_{\hat\bb} \med
 \begin{proof}
 Obviously, $|r_i|^2 = r_i^2$ so as $g(t) = t^2$ is convex and $h(t) = |t|$ is a positive function, the solution to $\argmin_{\hat\bb} \med_i r_i^2$ is also the solution to the LMA estimator. Hence, the BDP of the LMA estimator is given by Lemma \ref{lem:lmsBDP}.
 \end{proof}
-\noindent Due to length constraints, this theorem will not be proven. Now, we can consider the breakdown point of S-estimators.
+\noindent Now that the intermediate results are proven, we can consider the breakdown point of S-estimators.
 \begin{thm}
 \label{thm:sBDP}
-Under the given conditions on $\rho$, if $p>1$, and the observations are in the general position an S-estimator has a finite sample breakdown point of $\epsilon_n^* = ([n/2] - p + 2)/n$.
+Under the given conditions on $\rho$, if $p>1$ and the observations are in the general position an S-estimator has a finite sample breakdown point of $\epsilon_n^* = ([n/2] - p + 2)/n$.
 \end{thm}
 \begin{proof}
-This proof will use Lemma \ref{lem:lmaBDP} and Lemma \ref{lem:mScaleBound} to prove that the finite sample breakdown point of an S-estimator is equal to $\epsilon_n^*$. First, consider a sample where $m < ([n/2] - p + 2) = m^*$ observations in a sample are replaced with arbitrary values. Lemma \ref{lem:lma} implies that $\hat\bb_{LMA} = \argmin_{\hat\bb} \med_i |r_i|$ is bounded. Hence, Lemma \ref{lem:mScaleBound} implies that there exists some $s(r_1(\hat\bb_{LMA}), \hdots, r_n(\hat\bb_{LMA})$ is bounded. By definition, $s(r_1(\hat\bb), \hdots, r_n(\hat\bb)) \leq s(r_1(\hat\bb_{LMA}), \hdots, r_n(\hat\bb_{LMA})$ which implies that the scale is bounded above at $\hat\bb$. Also, $\alpha \med_i |r_i(\hat\bb_{LMA})|$ gives the smallest lower bound and is non-zero by Lemma \ref{lem:lmaBDP}.
+This proof will use Lemma \ref{lem:lmaBDP} and Lemma \ref{lem:mScaleBound} to prove that the finite sample breakdown point of an S-estimator is equal to $\epsilon_n^*$. First, consider a sample where $m < m^* = ([n/2] - p + 2)$ observations in a sample are replaced with arbitrary values. Lemma \ref{lem:lmaBDP} implies that $\hat\bb_{LMA} = \argmin_{\hat\bb} \med_i |r_i|$ is bounded. Hence, Lemma \ref{lem:mScaleBound} implies that $s(r_1(\hat\bb_{LMA}), \hdots, r_n(\hat\bb_{LMA})$ is bounded. By definition, $s(r_1(\hat\bb), \hdots, r_n(\hat\bb)) \leq s(r_1(\hat\bb_{LMA}), \hdots, r_n(\hat\bb_{LMA})$ which implies that the scale is bounded above at $\hat\bb$.Also, $\alpha \med_i |r_i(\hat\bb_{LMA})|$ is the smallest lower bound and is non-zero by Lemma \ref{lem:lmaBDP}.
 
-Let $C$ be the set of indices with arbitrary observations and $D$ be the remaining observations. First, assume that the norm of the S-estimator $||\hat\bb||$ is unbounded. If $||\hat\bb||$ is unbounded and $s$ is bounded, then $r_i\xrightarrow{}\infty$ for $i \in D$. When $r_i\xrightarrow{}\infty$, $\rho(r_i) \xrightarrow{} \rho(c)$. By assumption, $#(D) = n - m \geq n - ([n/2] - p + 2)$. Hence, by definition of $s$ and recalling that $K = \rho(c)/2$, we can show $\sum_{i=1}&n \rho(r_i) = n K \geq ([n/2] + p - 2) \rho(c) > nK$ which is a contradiction. Hence, $||\hat\bb||$ is bounded for $ m \leq \m^*$.
+Let $C$ be the set of indices with arbitrary observations and $D$ be the remaining observations. First, assume that the norm of the S-estimator $||\hat\bb||$ is unbounded. If $||\hat\bb||$ is unbounded and $s$ is bounded, then $r_i\xrightarrow{}\infty$ for $i \in D$. When $r_i\xrightarrow{}\infty$, $\rho(r_i) \xrightarrow{} \rho(c)$. By assumption, $\#(D) = n - m \geq n - ([n/2] - p + 2)$. Hence, by definition of $s$ and recalling that $K = \rho(c)/2$, we can show $$\sum_{i=1}&n \rho(r_i) = n K \geq ([n/2] + p - 2) \rho(c) > nK$$ which is a contradiction. Hence, $||\hat\bb||$ is bounded for $ m \leq \m^*$.
 
 Next, consider a sample where $m \geq ([n/2] - p + 2) = m^*$ observations in a sample are replaced with arbitrary values. For this case, we will need an additional result, given by Corollory 1 in $\cite{rousseeuw1984least}$, called the exact fit property. The exact fit property is given by,
 \begin{lemma}
 If $p>1$ and there exists some $\bb$ such that at least $n - [n/2] + p - 1$ observations are satisfy $y_i = \bx_i'\bb$ exactly and are in the general position, then the LMS solution equals $\bb$, whatever the observations are \cite{rousseeuw1984least}.
 \end{lemma}
-By Lemma \ref{lem:lmaBDP}, this property also holds for the LMA estimator. Now, we will show that we can construct a data set such that $||\hat\bb||$ is unbounded. First, we can define some plane $H$ such that $p-1$ observations lie on this plane. Next, place the $([n/2] - p + 2)$ arbitrary observations on $H$. A total of $([n/2] - p + 2) + p-1 = [n/2] + 1 > n/2$ points lie on $H$, so a total of $[n/2] + 1$ residuals are zero. Hence, $\med_i |r_i| = 0$ and thus Lemma \ref{lem:mScaleBound} implies that $s = 0$. When $s\xrightarrow{}0$, $\rho(r_i/s) \xrightarrow{} \rho(c)$ for finite $r_i$. Hence, $n K = \sum_{i=1}^n \rho(r_i/s) \geq ([n/2] + 1) \rho(c) > nK$ which is a contradiction. Hence, $||\hat\bb||$ is unbounded for $m > m^*$, completing the proof.
+By Lemma \ref{lem:lmaBDP}, this property also holds for the LMA estimator. Using this result, we can construct a data set such that $||\hat\bb||$ is unbounded. First, define some plane $H$ such that $p-1$ observations lie on this plane. Next, place the $([n/2] - p + 2)$ arbitrary observations on $H$. A total of $([n/2] - p + 2) + p-1 = [n/2] + 1 > n/2$ points lie on $H$, so a total of $[n/2] + 1$ residuals are zero. Hence, $\med_i |r_i| = 0$ and thus Lemma \ref{lem:mScaleBound} implies that $s = 0$.  When $s\xrightarrow{}0$, $\rho(r_i/s) \xrightarrow{} \rho(c)$ for finite $r_i$. Assume $||\hat\bb||$ is bounded. Then 
+$$n K = \sum_{i=1}^n \rho(r_i/s) \geq ([n/2] + 1) \rho(c) > nK$$ which is a contradiction. Hence, $||\hat\bb||$ is unbounded for $m > m^*$, completing the proof.
 \end{proof}
 We can see that for fixed $p$ that as $n\xrightarrow{} \infty$ that $\epsilon_n^*\xrightarrow{} 0.5$. This proof assumes a finite sample size, so an additional proof is needed to find the asymptotic breakdown point. However, such a proof also finds breakdown point of $0.5$ \cite{rousseeuw1984robust}.
 
@@ -133,6 +135,8 @@ As S-estimators are a type of general M-estimate, Theorem  3.1 in \cite{maronna1
 
 \subsection{Asymptotic Normality of S-estimators}
 
+In practice, when comparing the asymptotic efficiency of two robust estimators, on the asymptotic variance. This is because therefore the minimum asymptotic variance in the efficiency $\nu_{min}$ is the same in the efficiencies of both estimators. Hence, only the variance of the asymptotic distribution will considered.
+
 Similar to the consistency of S-estimators, the asymptotic normality of S-estimators is given by the fact that S-estimators are a type of general M-estimate for regression and scale. We can thus find the asymptotic distribution of $\hat\bb$ and $\hat\sigma$ as follows \cite{rousseeuw1984robust}.
 \begin{thm}
 For simplicity, consider $\theta_0 = 0$ and $\sigma_0=1$. If conditions (i) and (ii) from Theroem \ref{thm:sConsist} hold and (iii) $\rho'$ is differentiably everywhere but a finite number of points, $|\rho''|$ is bounded and $\int \rho'' d\Psi > 0$, where $\Psi$ is the normal distribution and (iv) $\E_H[\bx'\bx]$ is nonsingular and $E_H[||\bx||^3] < \infty$ then
@@ -146,9 +150,8 @@ For simplicity, consider $\theta_0 = 0$ and $\sigma_0=1$. If conditions (i) and 
 \begin{proof}
 S-estimators are a type of general M-estimate so this follows directly from Theorem 4.1 of \cite{maronna1981asymptotic}.
 \end{proof}
-When comparing the asymptotic efficiency of two robust estimators, we consider some class of estimators that includes both robust estimators. Therefore the minimum asymptotic variance in a class of estimators $\nu_{min}$ is equal in the efficiencies of both estimators. Therefore, in practice, only the asymptotic variance of an estimator is considered, rather than the efficiency. Therefore, only the variance of the asymptotic distribution will be given, rather than the efficiency.
 
 \subsection{Computation of S-estimators}
-S-estimators are defined as the implicit solution to (\ref{def:sEst}). Solving this solution requires solving a complex non-convex optimization problem. As a result, there is not guarantee that common iterative methods, such as gradient descent, will converge to a global minima. Therefore, S-estimators are gnerally calculated by choosing a good initial estimate for $\hat\bb$ and $\hat\sigma$ and performing updates until a local minimum is reached \cite{maronna2019robust}. These methods are discussed in detail Section 5.7.1.1 and Section 9.2 of "Robust Statistics with Examples in R" by Maronna \textit{et al.} (2019) \cite{maronna2019robust}.
+S-estimators are defined as the implicit solution to (\ref{def:sEst}). Solving this solution requires solving a non-convex optimization problem. As a result, there is not guarantee that common iterative methods, such as gradient descent, will converge to a global minima. S-estimators are generally calculated by choosing a good initial estimate for $\hat\bb$ and $\hat\sigma$ and performing iterative updates until a local minimum is reached \cite{maronna2019robust}. These methods are discussed in detail Section 5.7.1.1 and Section 9.2 of "Robust Statistics with Examples in R" by Maronna \textit{et al.} (2019) \cite{maronna2019robust}.
 
 % ...
